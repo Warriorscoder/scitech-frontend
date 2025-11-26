@@ -1,63 +1,111 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { getUserFromToken } from "../lib/auth";
+import Topbar from "../components/Topbar";
+import { PlusCircle, Settings, BarChart3 } from "lucide-react";
+
+export default function LandingPage() {
+  const router = useRouter();
+  const user = useMemo(() => getUserFromToken(), []);
+
+  const handleNavigation = (path: string) => {
+    const u = getUserFromToken();
+    if (!u) {
+      router.push("/auth/login");
+      return;
+    }
+
+    if (path === "/dashboard" && u.role !== "Admin") {
+      router.push("/");
+      return;
+    }
+
+    router.push(path);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen relative overflow-hidden">
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#F3EDFF] via-white to-[#F6F4FF]" />
+      <div className="absolute top-20 left-10 w-64 h-64 bg-[#8B5CF6]/30 blur-3xl rounded-full opacity-30 animate-pulse"></div>
+      <div className="absolute bottom-10 right-10 w-72 h-72 bg-[#8B5CF6]/20 blur-3xl rounded-full opacity-40 animate-pulse"></div>
+
+      <Topbar />
+
+      <main className="max-w-6xl mx-auto mt-10 px-4">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-extrabold text-gray-800 tracking-tight">
+            Smart Machine Control Portal
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-gray-500 mt-3 text-lg">
+            Manage machines, monitor performance, and explore AI-driven insights.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Feature Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            onClick={() => handleNavigation("/machines/add")}
+            className="cursor-pointer p-6 rounded-2xl bg-white/60 backdrop-blur-lg shadow-md border border-white/40 
+                       hover:shadow-xl hover:scale-[1.03] hover:border-[#8B5CF6] transition-all duration-300 group"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-[#8B5CF6]/10 text-[#8B5CF6]">
+                <PlusCircle size={28} />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800">Add a Machine</h3>
+            </div>
+            <p className="text-gray-500 mt-3">
+              Register a new machine and start tracking key parameters instantly.
+            </p>
+
+            <button className="mt-5 px-4 py-2 bg-[#8B5CF6] text-white rounded-lg shadow hover:bg-[#7A4CE0] transition">
+              Add Machine
+            </button>
+          </div>
+
+          {/* Update Machine */}
+          <div
+            onClick={() => handleNavigation("/machines")}
+            className="cursor-pointer p-6 rounded-2xl bg-white/60 backdrop-blur-lg shadow-md border border-white/40 
+                       hover:shadow-xl hover:scale-[1.03] hover:border-[#8B5CF6] transition-all duration-300 group"
           >
-            Documentation
-          </a>
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-[#8B5CF6]/10 text-[#8B5CF6]">
+                <Settings size={28} />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800">Update a Machine</h3>
+            </div>
+            <p className="text-gray-500 mt-3">
+              Modify machine data such as temperature, energy, or status.
+            </p>
+
+            <button className="mt-5 px-4 py-2 bg-[#8B5CF6] text-white rounded-lg shadow hover:bg-[#7A4CE0] transition">
+              Update Machine
+            </button>
+          </div>
+
+          {/* Dashboard */}
+          <div
+            onClick={() => handleNavigation("/dashboard")}
+            className="cursor-pointer p-6 rounded-2xl bg-white/60 backdrop-blur-lg shadow-md border border-white/40 
+                       hover:shadow-xl hover:scale-[1.03] hover:border-[#8B5CF6] transition-all duration-300 group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-[#8B5CF6]/10 text-[#8B5CF6]">
+                <BarChart3 size={28} />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800">Go to Dashboard</h3>
+            </div>
+            <p className="text-gray-500 mt-3">
+              Explore machine analytics, charts, and AI-driven predictions.
+            </p>
+
+            <button className="mt-5 px-4 py-2 bg-[#8B5CF6] text-white rounded-lg shadow hover:bg-[#7A4CE0] transition">
+              Dashboard
+            </button>
+          </div>
         </div>
       </main>
     </div>
