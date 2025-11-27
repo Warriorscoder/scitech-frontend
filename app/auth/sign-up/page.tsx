@@ -75,7 +75,7 @@ export default function SignupPage() {
 
         <p className="text-center text-gray-600 mt-4">
           Already have an account?{" "}
-          <Link href="/auth/login" className="text-purple-600 font-semibold">
+          <Link href="/auth/login" className="text-purple-600 font-semibold cursor-pointer">
             Sign In
           </Link>
         </p>

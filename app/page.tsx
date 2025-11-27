@@ -1,24 +1,32 @@
 "use client";
 
-import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { getUserFromToken } from "../lib/auth";
 import Topbar from "../components/Topbar";
 import { PlusCircle, Settings, BarChart3 } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function LandingPage() {
   const router = useRouter();
-  const user = useMemo(() => getUserFromToken(), []);
 
   const handleNavigation = (path: string) => {
     const u = getUserFromToken();
+
     if (!u) {
       router.push("/auth/login");
       return;
     }
 
+    // Show toast if non-admin tries dashboard
     if (path === "/dashboard" && u.role !== "Admin") {
-      router.push("/");
+      toast.error("Only admins can access the dashboard.", {
+        style: {
+          background: "#FEE2E2",
+          color: "#B91C1C",
+          border: "1px solid #FCA5A5",
+        },
+        icon: "⛔",
+      });
       return;
     }
 
@@ -45,10 +53,13 @@ export default function LandingPage() {
 
         {/* Feature Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          
+          {/* Add Machine */}
           <div
             onClick={() => handleNavigation("/machines/add")}
-            className="cursor-pointer p-6 rounded-2xl bg-white/60 backdrop-blur-lg shadow-md border border-white/40 
-                       hover:shadow-xl hover:scale-[1.03] hover:border-[#8B5CF6] transition-all duration-300 group"
+            className="cursor-pointer p-6 rounded-2xl bg-white/60 backdrop-blur-lg shadow-md 
+                       border border-white/40 hover:shadow-xl hover:scale-[1.03] 
+                       hover:border-[#8B5CF6] transition-all duration-300 group"
           >
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-xl bg-[#8B5CF6]/10 text-[#8B5CF6]">
@@ -68,8 +79,9 @@ export default function LandingPage() {
           {/* Update Machine */}
           <div
             onClick={() => handleNavigation("/machines")}
-            className="cursor-pointer p-6 rounded-2xl bg-white/60 backdrop-blur-lg shadow-md border border-white/40 
-                       hover:shadow-xl hover:scale-[1.03] hover:border-[#8B5CF6] transition-all duration-300 group"
+            className="cursor-pointer p-6 rounded-2xl bg-white/60 backdrop-blur-lg shadow-md 
+                       border border-white/40 hover:shadow-xl hover:scale-[1.03] 
+                       hover:border-[#8B5CF6] transition-all duration-300 group"
           >
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-xl bg-[#8B5CF6]/10 text-[#8B5CF6]">
@@ -89,8 +101,9 @@ export default function LandingPage() {
           {/* Dashboard */}
           <div
             onClick={() => handleNavigation("/dashboard")}
-            className="cursor-pointer p-6 rounded-2xl bg-white/60 backdrop-blur-lg shadow-md border border-white/40 
-                       hover:shadow-xl hover:scale-[1.03] hover:border-[#8B5CF6] transition-all duration-300 group"
+            className="cursor-pointer p-6 rounded-2xl bg-white/60 backdrop-blur-lg shadow-md 
+                       border border-white/40 hover:shadow-xl hover:scale-[1.03] 
+                       hover:border-[#8B5CF6] transition-all duration-300 group"
           >
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-xl bg-[#8B5CF6]/10 text-[#8B5CF6]">

@@ -42,7 +42,7 @@ export default function LoginPage() {
   return (
     <div>
       <h1 className="text-4xl text-gray-800 font-bold mb-4">
-        Holla, Welcome Back
+        Welcome Back
       </h1>
       <p className="text-gray-500 mb-8">
         Hey, welcome back to your special place
@@ -73,7 +73,7 @@ export default function LoginPage() {
 
         <p className="text-center text-gray-600 mt-4">
           Don’t have an account?{" "}
-          <Link href="/auth/sign-up" className="text-purple-600 font-semibold">
+          <Link href="/auth/sign-up" className="text-purple-600 font-semibold cursor-pointer">
             Sign Up
           </Link>
         </p>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "../lib/api";
 import { Machine, MachineStatus } from "../types";
+import toast from "react-hot-toast";
 
 export default function MachineForm({ initial, mode = "create" }: { initial?: Partial<Machine>; mode?: "create" | "edit" }) {
   const router = useRouter();
@@ -19,13 +20,21 @@ export default function MachineForm({ initial, mode = "create" }: { initial?: Pa
     try {
       if (mode === "create") {
         await api.post("/machine", { name, status, temperature, energyConsumption: energy });
+        toast.success("Machine added successfully!", {
+          style: { background: "#ECFDF5", color: "#065F46", border: "1px solid #A7F3D0" },
+          icon: "✅",
+        });
       } else if (mode === "edit" && initial?._id) {
         await api.patch(`/machine/${initial._id}`, { name, status, temperature, energyConsumption: energy });
+        toast.success("Machine updated successfully!", {
+          style: { background: "#EEF2FF", color: "#4338CA", border: "1px solid #C7D2FE" },
+          icon: "🛠️",
+        }); 
       }
       router.push("/dashboard");
     } catch (err) {
       console.error(err);
-      alert("API error");
+      toast.error("Something went wrong. Try again.");
     } finally {
       setLoading(false);
     }
