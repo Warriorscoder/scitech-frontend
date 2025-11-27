@@ -9,13 +9,13 @@ import toast from "react-hot-toast";
 export default function LandingPage() {
   const router = useRouter();
 
+  const u = getUserFromToken();
+  console.log("U", u)
+  if (!u) {
+    router.push("/auth/login");
+    return;
+  }
   const handleNavigation = (path: string) => {
-    const u = getUserFromToken();
-
-    if (!u) {
-      router.push("/auth/login");
-      return;
-    }
 
     // Show toast if non-admin tries dashboard
     if (path === "/dashboard" && u.role !== "Admin") {
