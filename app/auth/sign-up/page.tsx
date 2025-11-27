@@ -1,9 +1,10 @@
 "use client";
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -11,35 +12,42 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleSubmit = async ()=> {
+  const handleSubmit = async () => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/`, {
-        name,
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/`,
+        { name, email, password }
+      );
 
-      if (!response) {
-        console.log("there is an error in create function");
-      }
+      toast.success("Account created successfully!");
 
       localStorage.setItem("token", response.data.token);
+
       setName("");
       setEmail("");
       setPassword("");
+
       router.push("/dashboard");
-    } catch (error) {
-      console.log("Unexpected error occured ", error);
+    } catch (error: unknown) {
+      console.error("Unexpected error occurred", error);
+
+      let message = "Signup failed. Please try again.";
+
+      if (error instanceof AxiosError) {
+        message =
+          error.response?.data?.message ||
+          error.response?.data ||
+          message;
+      }
+
+      toast.error(message);
     }
   };
-
 
   return (
     <div>
       <h1 className="text-4xl font-bold mb-4 text-gray-800">Create Account</h1>
-      <p className="text-gray-500 mb-8">
-        Join us and start your journey today!
-      </p>
+      <p className="text-gray-500 mb-8">Join us and start your journey today!</p>
 
       <div className="space-y-4 text-gray-500">
         <input
@@ -75,7 +83,10 @@ export default function SignupPage() {
 
         <p className="text-center text-gray-600 mt-4">
           Already have an account?{" "}
-          <Link href="/auth/login" className="text-purple-600 font-semibold cursor-pointer">
+          <Link
+            href="/auth/login"
+            className="text-purple-600 font-semibold cursor-pointer"
+          >
             Sign In
           </Link>
         </p>
